@@ -34,7 +34,7 @@ def run(args):
 
     ## Pre-Train ##
     print('Pre-Train for {} epochs.'.format(args.pre_epochs))
-    pre_result = train_eval_loop(model, loss, optimizer, scheduler, train_loader, 
+    pre_result, _ = train_eval_loop(model, loss, optimizer, scheduler, train_loader, 
                                  test_loader, device, args.pre_epochs, args.verbose)
 
     ## Prune ##
@@ -47,7 +47,7 @@ def run(args):
     
     ## Post-Train ##
     print('Post-Training for {} epochs.'.format(args.post_epochs))
-    post_result = train_eval_loop(model, loss, optimizer, scheduler, train_loader, 
+    post_result, inference_time = train_eval_loop(model, loss, optimizer, scheduler, train_loader, 
                                   test_loader, device, args.post_epochs, args.verbose) 
 
     ## Display Results ##
@@ -65,15 +65,24 @@ def run(args):
     print("Prune results:\n", prune_result)
     print("Parameter Sparsity: {}/{} ({:.4f})".format(total_params, possible_params, total_params / possible_params))
     print("FLOP Sparsity: {}/{} ({:.4f})".format(total_flops, possible_flops, total_flops / possible_flops))
+    
+    if args.save:
+        with open("{}/log.txt".format(args.result_dir), 'w') as f:
+            f.write("model\tdataset\texperiment\tpruner\tcompression\tmetrics\tscore\n")
+            f.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(args.model, args.dataset, args.experiment, args.pruner, args.compression, "final_top1_accuracy", train_result['top1_accuracy']['Final'].values[0]))
+            f.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(args.model, args.dataset, args.experiment, args.pruner, args.compression, "param_sparsity", total_params / possible_params))
+            f.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(args.model, args.dataset, args.experiment, args.pruner, args.compression, "flop_sparsity", total_flops / possible_flops))
+            f.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(args.model, args.dataset, args.experiment, args.pruner, args.compression, "inference_time", inference_time))
+            
 
     ## Save Results and Model ##
-    if args.save:
-        print('Saving results.')
-        pre_result.to_pickle("{}/pre-train.pkl".format(args.result_dir))
-        post_result.to_pickle("{}/post-train.pkl".format(args.result_dir))
-        prune_result.to_pickle("{}/compression.pkl".format(args.result_dir))
-        torch.save(model.state_dict(),"{}/model.pt".format(args.result_dir))
-        torch.save(optimizer.state_dict(),"{}/optimizer.pt".format(args.result_dir))
-        torch.save(scheduler.state_dict(),"{}/scheduler.pt".format(args.result_dir))
+    # if args.save:
+    #     print('Saving results.')
+    #     pre_result.to_pickle("{}/pre-train.pkl".format(args.result_dir))
+    #     post_result.to_pickle("{}/post-train.pkl".format(args.result_dir))
+    #     prune_result.to_pickle("{}/compression.pkl".format(args.result_dir))
+    #     torch.save(model.state_dict(),"{}/model.pt".format(args.result_dir))
+    #     torch.save(optimizer.state_dict(),"{}/optimizer.pt".format(args.result_dir))
+    #     torch.save(scheduler.state_dict(),"{}/scheduler.pt".format(args.result_dir))
 
 

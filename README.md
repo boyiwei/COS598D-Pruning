@@ -46,10 +46,10 @@ If you are using Google Colab, to accommodate the limited resources on Google Co
 #### Testing on different archietectures. Please fill the results table:
 *Test accuracy (top 1)* of pruned models on CIFAR10 and MNIST (sparsity = 10%). `--compression 1` means sparsity = 10^-1.
 ```
-python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner synflow --compression 1
+python main.py --model-class lottery --model vgg16 --dataset cifar10 --experiment singleshot --pruner synflow --compression 1 --expid 1
 ```
 ```
-python main.py --model-class default --model fc --dataset cifar10 --experiment singleshot --pruner synflow --compression 1
+python main.py --model-class default --model fc --dataset mnist --experiment singleshot --pruner synflow --compression 1 --expid 2
 ```
 ***Testing accuracy (top 1)***
 

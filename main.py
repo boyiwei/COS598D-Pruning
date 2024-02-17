@@ -113,7 +113,7 @@ if __name__ == '__main__':
         print("WARNING: this experiment is not being saved.")
         setattr(args, 'save', False)
     else:
-        result_dir = '{}/{}/{}'.format(args.result_dir, args.experiment, args.expid)
+        result_dir = '{}/{}_{}_{}/{}/{}/{}'.format(args.result_dir, args.model_class, args.model, args.dataset, args.experiment, args.pruner, args.compression)
         setattr(args, 'save', True)
         setattr(args, 'result_dir', result_dir)
         try:
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     if args.experiment == 'multishot':
         multishot.run(args)
     if args.experiment == 'unit-conservation':
-    	unit_conservation.run(args)
+        unit_conservation.run(args)
     if args.experiment == 'layer-conservation':
         layer_conservation.run(args)
     if args.experiment == 'imp-conservation':

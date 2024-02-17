@@ -2,6 +2,7 @@ import torch
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import timeit
 
 def train(model, loss, optimizer, dataloader, device, epoch, verbose, log_interval=10):
     model.train()
@@ -45,13 +46,19 @@ def eval(model, loss, dataloader, device, verbose):
 def train_eval_loop(model, loss, optimizer, scheduler, train_loader, test_loader, device, epochs, verbose):
     test_loss, accuracy1, accuracy5 = eval(model, loss, test_loader, device, verbose)
     rows = [[np.nan, test_loss, accuracy1, accuracy5]]
+    start = 0
+    stop = 0
     for epoch in tqdm(range(epochs)):
         train_loss = train(model, loss, optimizer, train_loader, device, epoch, verbose)
+        if epoch == epochs - 1 and epochs > 1:
+            start = timeit.default_timer()
         test_loss, accuracy1, accuracy5 = eval(model, loss, test_loader, device, verbose)
+        if epoch == epochs - 1 and epochs > 1:
+            stop = timeit.default_timer()
         row = [train_loss, test_loss, accuracy1, accuracy5]
         scheduler.step()
         rows.append(row)
     columns = ['train_loss', 'test_loss', 'top1_accuracy', 'top5_accuracy']
-    return pd.DataFrame(rows, columns=columns)
+    return pd.DataFrame(rows, columns=columns), (stop - start)
 
 
