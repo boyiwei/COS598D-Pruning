@@ -119,7 +119,7 @@ if __name__ == '__main__':
         try:
             os.makedirs(result_dir)
         except FileExistsError:
-            val = ""
+            val = "yes"
             while val not in ['yes', 'no']:
                 val = input("Experiment '{}' with expid '{}' exists.  Overwrite (yes/no)? ".format(args.experiment, args.expid))
             if val == 'no':
