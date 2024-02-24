@@ -73,16 +73,18 @@ def run(args):
             f.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(args.model, args.dataset, args.experiment, args.pruner, args.compression, "param_sparsity", total_params / possible_params))
             f.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(args.model, args.dataset, args.experiment, args.pruner, args.compression, "flop_sparsity", total_flops / possible_flops))
             f.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(args.model, args.dataset, args.experiment, args.pruner, args.compression, "inference_time", inference_time))
+        with open("{}/prune.csv".format(args.result_dir), 'w') as f:
+            f.write(prune_result.to_csv())
             
 
-    ## Save Results and Model ##
-    # if args.save:
-    #     print('Saving results.')
-    #     pre_result.to_pickle("{}/pre-train.pkl".format(args.result_dir))
-    #     post_result.to_pickle("{}/post-train.pkl".format(args.result_dir))
-    #     prune_result.to_pickle("{}/compression.pkl".format(args.result_dir))
-    #     torch.save(model.state_dict(),"{}/model.pt".format(args.result_dir))
-    #     torch.save(optimizer.state_dict(),"{}/optimizer.pt".format(args.result_dir))
-    #     torch.save(scheduler.state_dict(),"{}/scheduler.pt".format(args.result_dir))
+    # Save Results and Model ##
+    if args.save:
+        print('Saving results.')
+        pre_result.to_pickle("{}/pre-train.pkl".format(args.result_dir))
+        post_result.to_pickle("{}/post-train.pkl".format(args.result_dir))
+        prune_result.to_pickle("{}/compression.pkl".format(args.result_dir))
+        torch.save(model.state_dict(),"{}/model.pt".format(args.result_dir))
+        torch.save(optimizer.state_dict(),"{}/optimizer.pt".format(args.result_dir))
+        torch.save(scheduler.state_dict(),"{}/scheduler.pt".format(args.result_dir))
 
 
